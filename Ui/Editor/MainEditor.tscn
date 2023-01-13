@@ -1,0 +1,84 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://sprites/actuallyCoolTheme.tres" type="Theme" id=1]
+[ext_resource path="res://playerSprite.png" type="Texture" id=2]
+[ext_resource path="res://basicEnemySprite.png" type="Texture" id=3]
+[ext_resource path="res://sprites/InvertGravity.png" type="Texture" id=4]
+
+[sub_resource type="GDScript" id=1]
+resource_name = "Main"
+script/source = "extends Control
+
+
+func _handle_button(tags:Array):
+	pass
+"
+
+[node name="MainEditor" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -1.0
+margin_bottom = -1.0
+theme = ExtResource( 1 )
+script = SubResource( 1 )
+
+[node name="Items" type="ColorRect" parent="."]
+anchor_right = 0.189
+anchor_bottom = 1.0
+margin_right = 0.463989
+color = Color( 0, 0, 0, 1 )
+
+[node name="Button2" type="Button" parent="Items"]
+anchor_left = 0.082
+anchor_top = 0.227
+anchor_right = 1.216
+anchor_bottom = 0.31
+margin_left = 0.092001
+margin_top = -0.200012
+margin_right = 0.0960083
+text = "The level ender "
+
+[node name="GridContainer" type="GridContainer" parent="Items"]
+anchor_right = 1.0
+anchor_bottom = 0.215
+margin_right = 1.52588e-05
+columns = 3
+
+[node name="Player" type="TextureButton" parent="Items/GridContainer"]
+margin_right = 140.0
+margin_bottom = 75.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource( 2 )
+expand = true
+
+[node name="Enemy" type="TextureButton" parent="Items/GridContainer"]
+margin_left = 144.0
+margin_right = 167.0
+margin_bottom = 75.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture_normal = ExtResource( 3 )
+expand = true
+
+[node name="Gravity thing" type="TextureButton" parent="Items/GridContainer"]
+margin_left = 171.0
+margin_right = 194.0
+margin_bottom = 75.0
+size_flags_horizontal = 3
+texture_normal = ExtResource( 4 )
+expand = true
+
+[node name="Button" type="Button" parent="Items/GridContainer"]
+margin_top = 79.0
+margin_right = 140.0
+margin_bottom = 129.0
+text = "the tileset"
+
+[node name="ItemProperties" type="ColorRect" parent="."]
+anchor_left = 0.805
+anchor_right = 0.994
+anchor_bottom = 1.0
+margin_left = -0.320068
+margin_right = 0.143982
+color = Color( 0, 0, 0, 1 )

@@ -1,0 +1,80 @@
+[gd_scene load_steps=6 format=2]
+
+[sub_resource type="GDScript" id=4]
+resource_name = "LevelEnder"
+script/source = "extends Area2D
+
+
+
+func _on_LevelEnder_body_entered(body: Node) -> void:
+	Api.levelID+=1
+	var levels=[]
+	var level_we_need=null
+	var dir=Directory.new()
+	dir.open(\"res://Levels\")
+	dir.list_dir_begin()
+	while true: 
+		var file=dir.get_next()
+		if file==\"\":
+			break 
+		elif !file.begins_with(\".\"):
+			levels.append(file)
+	dir.list_dir_end()
+	for i in levels.size():
+		if levels[i].ends_with(str(Api.levelID)+\".tscn\"):
+			level_we_need=\"res://Levels/\"+levels[i]
+	if level_we_need==null:
+		print(\"completed the game yay\")
+		get_tree().change_scene(\"res://Ui/Dialogs/StartupDialog.tscn\")
+	else:
+		get_tree().change_scene(level_we_need)
+"
+
+[sub_resource type="Gradient" id=1]
+interpolation_mode = 1
+offsets = PoolRealArray( 0, 0.005, 1 )
+colors = PoolColorArray( 0, 0, 0, 1, 0, 0.203922, 1, 1, 1, 1, 1, 1 )
+
+[sub_resource type="GradientTexture" id=2]
+gradient = SubResource( 1 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 10, 350 )
+
+[sub_resource type="ParticlesMaterial" id=5]
+emission_shape = 2
+emission_box_extents = Vector3( 0.1, 350, 1 )
+flag_disable_z = true
+gravity = Vector3( -100, 0, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+angle_random = 1.0
+scale = 20.0
+scale_random = 1.0
+color = Color( 1, 0.980392, 0.698039, 1 )
+
+[node name="LevelEnder" type="Area2D"]
+scale = Vector2( 3, 3 )
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+script = SubResource( 4 )
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 512, 296 )
+scale = Vector2( 0.5, 700 )
+texture = SubResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, 297 )
+shape = SubResource( 3 )
+
+[node name="Particles2D" type="Particles2D" parent="."]
+position = Vector2( 1, 300 )
+emitting = false
+amount = 25
+lifetime = 1.5
+visibility_rect = Rect2( -0.921935, -294.479, 1.86413, 619.052 )
+process_material = SubResource( 5 )
+
+[connection signal="body_entered" from="." to="." method="_on_LevelEnder_body_entered"]

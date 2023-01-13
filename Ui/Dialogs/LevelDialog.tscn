@@ -1,0 +1,54 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://sprites/actuallyCoolTheme.tres" type="Theme" id=1]
+
+[sub_resource type="GDScript" id=1]
+resource_name = "GenLevelDialog"
+script/source = "extends Control
+
+
+func _ready() -> void:
+	var levels=[]
+	var level_we_need=null
+	var dir=Directory.new()
+	dir.open(\"res://Levels\")
+	dir.list_dir_begin()
+	while true: 
+		var file=dir.get_next()
+		if file==\"\":
+			break 
+		elif !file.begins_with(\".\"):
+			levels.append(file)
+	dir.list_dir_end()
+	for i in levels.size():
+		var button=Button.new()
+		button.text=levels[i]
+		$TabContainer/Page1/VBoxContainer.add_child(button)
+		button.connect(\"pressed\",self,\"_onButtonPress\",[levels[i]])
+
+func _onButtonPress(level):
+	get_tree().change_scene(\"res://Levels/\"+level)
+"
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = SubResource( 1 )
+
+[node name="TabContainer" type="TabContainer" parent="."]
+anchor_top = 0.06
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Page1" type="Tabs" parent="TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 56.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Page1"]
+anchor_right = 1.0
+anchor_bottom = 1.0

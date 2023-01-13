@@ -1,0 +1,87 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://sprites/actuallyCoolTheme.tres" type="Theme" id=1]
+
+[sub_resource type="GDScript" id=1]
+resource_name = "Generate"
+script/source = "extends Control
+
+var settings:=ProjectSettings
+var graphics_bool=[]
+onready var container=$TabContainer/Graphics/VBoxContainer
+func _ready():
+	for i in settings.get_property_list().size():
+		if settings.get_property_list()[i][\"name\"].begins_with(\"display/window\"):
+			if typeof(settings.get_setting(settings.get_property_list()[i][\"name\"]))==TYPE_BOOL:
+				graphics_bool.append(i)
+			
+	for i in graphics_bool.size():
+		var button=CheckButton.new()
+		var buttonName=settings.get_property_list()[graphics_bool[i]][\"name\"]
+		button.text=buttonName.replace(\"-\",\" \").capitalize()
+		container.add_child(button)
+		button.pressed=settings.get_setting(settings.get_property_list()[graphics_bool[i]][\"name\"])
+		button.connect(\"pressed\",self,\"_on_graphicsButtonPress\",[i,button])
+		
+func _on_graphicsButtonPress(setting,button):
+	var pressed=button.pressed
+	var settingName=settings.get_property_list()[graphics_bool[setting]][\"name\"]
+	settings.set_setting(settingName,pressed)
+	button.pressed=settings.get_setting(settingName)
+	settings.save()
+
+
+func _on_Button_pressed() -> void:
+	get_tree().change_scene(\"res://Ui/Dialogs/StartupDialog.tscn\")
+"
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = SubResource( 1 )
+
+[node name="TabContainer" type="TabContainer" parent="."]
+anchor_top = 0.143
+anchor_right = 0.996
+anchor_bottom = 1.0
+margin_top = 0.199997
+margin_right = 4.09595
+
+[node name="Graphics" type="Tabs" parent="TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 56.0
+margin_right = -4.0
+margin_bottom = -4.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/Graphics"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Label" type="Label" parent="."]
+anchor_left = 0.245
+anchor_top = 0.08
+anchor_right = 0.746
+anchor_bottom = 0.122
+margin_left = 0.119995
+margin_top = -11.0
+margin_right = 0.0959473
+margin_bottom = 1.8
+text = "Automatically Generated Settings menu"
+align = 1
+
+[node name="Button" type="Button" parent="."]
+pause_mode = 2
+anchor_left = 0.021
+anchor_top = 0.038
+anchor_right = 0.204
+anchor_bottom = 0.122
+margin_left = 0.495998
+margin_top = 0.199999
+margin_right = 0.103989
+margin_bottom = -0.200005
+text = "Back"
+
+[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]

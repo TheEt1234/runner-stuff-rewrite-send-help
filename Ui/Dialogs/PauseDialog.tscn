@@ -1,0 +1,88 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://sprites/actuallyCoolTheme.tres" type="Theme" id=1]
+
+[sub_resource type="GDScript" id=1]
+resource_name = "PauseDialog"
+script/source = "extends Control
+
+var use_for_death=false
+
+func _ready() -> void:
+	visible=false
+	use_for_death(false)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed(\"pause\")&&!use_for_death:
+		visible=!visible
+		get_tree().paused=visible
+func _process(delta: float) -> void:
+	if Api.player==null:
+		use_for_death(true)
+
+func _on_Button_pressed() -> void:
+	get_tree().change_scene(\"res://Ui/Dialogs/StartupDialog.tscn\")
+	get_tree().paused=false
+
+
+func _on_Button2_pressed() -> void:
+	get_tree().paused=false
+	get_tree().reload_current_scene()
+
+func use_for_death(TF:bool):
+	if TF==true:
+		$Label.text=\"you death\"
+		visible=true
+		get_tree().paused=true
+		use_for_death=true
+	else:
+		$Label.text=\"Paused\"
+"
+
+[node name="Control" type="Control"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = SubResource( 1 )
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.392157 )
+
+[node name="Label" type="Label" parent="."]
+anchor_left = 0.25
+anchor_top = 0.427
+anchor_right = 0.571
+anchor_bottom = 0.508
+margin_top = -0.200012
+margin_right = 0.295959
+margin_bottom = 0.199982
+text = "PAUSED"
+align = 1
+valign = 1
+
+[node name="Button" type="Button" parent="."]
+anchor_left = 0.359
+anchor_top = 0.537
+anchor_right = 0.452
+anchor_bottom = 0.62
+margin_left = 0.383972
+margin_top = -0.200012
+margin_right = 0.151978
+text = "Menu"
+
+[node name="Button2" type="Button" parent="."]
+anchor_left = 0.359
+anchor_top = 0.643
+anchor_right = 0.452
+anchor_bottom = 0.727
+margin_left = 0.383972
+margin_top = 0.199982
+margin_right = 0.151978
+margin_bottom = -0.200043
+text = "Retry"
+
+[connection signal="pressed" from="Button" to="." method="_on_Button_pressed"]
+[connection signal="pressed" from="Button2" to="." method="_on_Button2_pressed"]

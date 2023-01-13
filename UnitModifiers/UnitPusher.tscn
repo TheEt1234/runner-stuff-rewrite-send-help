@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=2]
+
+[sub_resource type="GDScript" id=2]
+resource_name = "UnitPusher"
+script/source = "extends UnitModifier
+
+export var push_force:=10
+
+func _on_UnitModifier_body_entered(body: Node) -> void:
+	if body.canBePushed:
+		body.velocity.x+=push_force*body.pushMultiplier
+
+func _ready() -> void:
+#	$Particles2D.global_position.x=$CollisionShape2D.shape.extents.x
+	pass # TODO: ADD AUTOMATICALLY GENERATED PARTICLES (somehow)
+"
+
+[sub_resource type="RectangleShape2D" id=1]
+
+[node name="UnitPusher" type="Area2D"]
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+script = SubResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 1 )
+
+[connection signal="body_entered" from="." to="." method="_on_UnitModifier_body_entered"]

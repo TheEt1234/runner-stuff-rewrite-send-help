@@ -1,0 +1,93 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://sprites/console_theme.tres" type="Theme" id=1]
+[ext_resource path="res://sprites/fonts/Roboto-Medium.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://sprites/fonts/Roboto-Regular.ttf" type="DynamicFontData" id=3]
+
+[sub_resource type="GDScript" id=3]
+resource_name = "Console"
+script/source = "extends Control
+
+func _ready() -> void:
+	visible=false
+func _process(_delta: float) ->void:
+	if Input.is_action_just_pressed(\"console\"): 
+		visible=!visible
+func _on_RichTextLabel_meta_clicked(meta) -> void:
+	var _godot_please_shut_up=OS.shell_open(meta)
+
+
+func _on_LineEdit_text_entered(new_text: String) -> void:
+	var script = GDScript.new()
+
+	script.set_source_code(\"func eval():\\n\\treturn \"+new_text)
+	script.reload()
+	
+	var node= Reference.new()
+	node.set_script(script)
+	var ret=node.eval()
+	
+	$\"ScrollContainer/definitely a container/LineEdit\".text=\"\"
+	if ret!=null:
+		$\"ScrollContainer/definitely a container/RichTextLabel\".bbcode_text+=\"\\n\"+ret
+"
+
+[sub_resource type="DynamicFont" id=2]
+size = 32
+use_filter = true
+font_data = ExtResource( 2 )
+
+[sub_resource type="Theme" id=4]
+default_font = SubResource( 2 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 32
+font_data = ExtResource( 3 )
+
+[node name="Console" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+script = SubResource( 3 )
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="definitely a container" type="Control" parent="ScrollContainer"]
+margin_right = 1024.0
+margin_bottom = 600.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="ScrollContainer/definitely a container"]
+anchor_right = 1.0
+anchor_bottom = 0.853
+margin_bottom = 0.199982
+hint_tooltip = "this is where the thing shows..
+
+don't be scared"
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource( 4 )
+bbcode_enabled = true
+bbcode_text = "This console can utilise [color=yellow][url=https://www.bbcode.org/how-to-use-bbcode-a-complete-guide.php]BBCode[/url][/color]
+[color=grey]also it's limited to hell because gdscript yuck 
+don't even try to be imperfect that will result in death[/color]"
+text = "This console can utilise BBCode
+also it's limited to hell because gdscript yuck 
+don't even try to be imperfect that will result in death"
+
+[node name="LineEdit" type="LineEdit" parent="ScrollContainer/definitely a container"]
+anchor_top = 0.853
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -0.800018
+margin_bottom = -1.0
+custom_fonts/font = SubResource( 5 )
+text = "\"frog\""
+max_length = 255
+clear_button_enabled = true
+
+[connection signal="meta_clicked" from="ScrollContainer/definitely a container/RichTextLabel" to="." method="_on_RichTextLabel_meta_clicked"]
+[connection signal="text_entered" from="ScrollContainer/definitely a container/LineEdit" to="." method="_on_LineEdit_text_entered"]

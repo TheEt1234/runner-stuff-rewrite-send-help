@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+resource_name = "API"
+script/source = "extends Node
+
+var player=null
+var game=null
+var levelID:int=1
+var version=-1
+
+func dispatch_info(message:String):
+	pass
+func dispatch_error(message:String):
+	pass
+
+"
+
+[node name="API" type="Node"]
+script = SubResource( 1 )
